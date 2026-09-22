@@ -3,4 +3,5 @@
 /resources/
 /public/
 /.hugo_build.lock
-/data/registries.json
+/data/registry.json
+/data/mapping.json
