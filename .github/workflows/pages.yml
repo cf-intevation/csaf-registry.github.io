@@ -40,7 +40,7 @@ jobs:
         with:
           python-version: '3.14'
       - name: Grab Data files from oasis
-        run: python -m pip install requests && python get.py
+        run: python -m pip install -r requirements.txt && python get.py
       - name: Setup Pages
         id: pages
         uses: actions/configure-pages@v6
