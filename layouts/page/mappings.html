@@ -2,12 +2,15 @@
 <div class="container my-5">
     <h1 class="mb-3">{{ .Title }}</h1>
     <p class="text-muted">{{ .Content }}</p>
-    <h2>Unambiguous Mappings</h2>
+    {{ range $regName, $map := hugo.Data.demo.mapping }}
+    <h2 class="mt-4">Registry {{ $regName }}</h2>
+    <p>Last updated on {{ $map.last_updated | time.AsTime | time.Format ":date_long" }} {{ $map.last_updated | time.AsTime | time.Format ":time_medium" }} with version {{ $map.mapping_version }}</p>
+    <h3>Unambiguous Mappings</h3>
     <ul>
-        {{ range hugo.Data.mapping.entries }}
+        {{ range $map.entries }}
         {{ if not .ambiguous }}
         <li><a href="{{ .registered_system_name }}" target="_blank">{{ .old_system_name }}</a></li>
-        <div class="ms-4 table-responsive shadow-sm rounded my-2">
+        <div class="table-responsive shadow-sm rounded my-2">
             <table class="table tabel-hover table-striped align-middle mb-0">
                 <thead>
                     <tr>
@@ -29,9 +32,9 @@
         {{ end }}
     </ul>
     <p>&nbsp;</p>
-    <h2>Ambiguous Mappings</h2>
-    <div class="table-responsive shadow-sm rounded">
-        <table class="mb-0 table tabel-hover table-striped align-middle">
+    <h3>Ambiguous Mappings</h3>
+    <div class="table-responsive shadow-sm rounded my-2 ms-3">
+        <table class="table tabel-hover table-striped align-middle mb-0">
             <thead>
                 <tr>
                     <th>System</th>
@@ -40,7 +43,7 @@
                 </tr>
             </thead>
             <tbody>
-                {{ range hugo.Data.mapping.entries }}
+                {{ range $map.entries }}
                 {{ if .ambiguous }}
                 <tr>
                     <td>{{ .old_system_name }}</td>
@@ -60,5 +63,6 @@
             </tbody>
         </table>
     </div>
+    {{ end }}
 </div>
 {{ end }}

@@ -1,0 +1,142 @@
+{
+  "mapping": {
+    "id": {
+      "$schema": "https://raw.githubusercontent.com/oasis-tcs/csaf/master/registry/id/schema/mapping.schema.json",
+      "entries": [
+        {
+          "ambiguous": false,
+          "old_system_name": "OASIS Open CSAF TC GitHub Issues",
+          "registered_system_name": "https://github.com/oasis-tcs/csaf",
+          "text_conversion_rules": [
+            {
+              "pattern_precondition": "^[Ii][Ss]{2}[Uu][Ee][Ss]?\\s[#]?\\d+$",
+              "rule": "Remove the number and case insensitive substring 'Issue' as well as any following white space. Take the remaining string and insert a '#' at the beginning if the string does not start with one. Then, remove all zeros after the '#' and before the first non-zero digit."
+            },
+            {
+              "pattern_precondition": "^\\d+$",
+              "rule": "Insert a '#' at the beginning if the string does not start with one. Then, remove all zeros after the '#' and before the first non-zero digit."
+            }
+          ]
+        }
+      ],
+      "last_updated": "2026-02-06T00:55:00Z",
+      "mapping_version": 1
+    },
+    "third": {
+      "$schema": "https://raw.githubusercontent.com/oasis-tcs/csaf/master/registry/id/schema/mapping.schema.json",
+      "entries": [
+        {
+          "ambiguous": false,
+          "old_system_name": "OASIS Open CSAF TC GitHub Issues",
+          "registered_system_name": "https://github.com/oasis-tcs/csaf",
+          "text_conversion_rules": [
+            {
+              "pattern_precondition": "^[Ii][Ss]{2}[Uu][Ee][Ss]?\\s[#]?\\d+$",
+              "rule": "Remove the number and case insensitive substring 'Issue' as well as any following white space. Take the remaining string and insert a '#' at the beginning if the string does not start with one. Then, remove all zeros after the '#' and before the first non-zero digit."
+            },
+            {
+              "pattern_precondition": "^\\d+$",
+              "rule": "Insert a '#' at the beginning if the string does not start with one. Then, remove all zeros after the '#' and before the first non-zero digit."
+            }
+          ]
+        },
+        {
+          "ambiguous": false,
+          "old_system_name": "Other GitHub Issues",
+          "registered_system_name": "https://registry.example.org",
+          "text_conversion_rules": [
+            {
+              "pattern_precondition": "^[Ii][Ss]{2}[Uu][Ee][Ss]?\\s[#]?\\d+$",
+              "rule": "Remove the number and case insensitive substring 'Issue' as well as any following white space. Take the remaining string and insert a '#' at the beginning if the string does not start with one. Then, remove all zeros after the '#' and before the first non-zero digit."
+            },
+            {
+              "pattern_precondition": "^\\d+$",
+              "rule": "Insert a '#' at the beginning if the string does not start with one. Then, remove all zeros after the '#' and before the first non-zero digit."
+            }
+          ]
+        },
+        {
+          "ambiguous": true,
+          "old_system_name": "Some Issues",
+          "potentially_matching_registered_system_names": ["https://foo.bar.example.org", "https://list.example.org"],
+          "potentially_matching_unregistered_system_names": ["GitHub Issues", "FooBar Tracking System", "https://void.example.org"]
+        },
+        {
+          "ambiguous": true,
+          "old_system_name": "Other Issues",
+          "potentially_matching_registered_system_names": ["https://foo.bar.example.org", "https://list.example.org"],
+          "potentially_matching_unregistered_system_names": ["GitHub Issues", "FooBar Tracking System", "https://void.example.org"]
+        }
+      ],
+      "last_updated": "2026-03-06T22:55:00Z",
+      "mapping_version": 3
+    }
+  },
+  "registry": {
+    "id": {
+      "$schema": "https://raw.githubusercontent.com/oasis-tcs/csaf/master/registry/id/schema/registry.schema.json",
+      "entries": [
+        {
+          "common_name": "OASIS Open CSAF TC GitHub Issues",
+          "example_identifiers": [
+            "#1217"
+          ],
+          "published": "2026-01-28T17:45:00Z",
+          "summary": "Contains identifiers for issues in the official standard repository of the OASIS Open CSAF TC.",
+          "system_name": "https://github.com/oasis-tcs/csaf",
+          "text_pattern": "^#[1-9]\\d*$",
+          "updated": "2026-01-28T17:45:00Z"
+        },
+        {
+          "common_name": "EUVD IDs",
+          "example_identifiers": [
+            "EUVD-2026-4660"
+          ],
+          "published": "2026-01-28T18:00:00Z",
+          "summary": "Contains identifiers from the European Vulnerability Database (EUVD).",
+          "system_name": "https://euvd.enisa.europa.eu",
+          "text_pattern": "^EUVD-[1-9][0-9]{3}-[0-9]{4,}$",
+          "updated": "2026-02-06T15:35:00Z"
+        }
+      ],
+      "last_updated": "2026-02-06T15:35:00Z",
+      "registry_version": 1
+    },
+    "other": {
+      "$schema": "https://raw.githubusercontent.com/oasis-tcs/csaf/master/registry/id/schema/registry.schema.json",
+      "entries": [
+        {
+          "common_name": "Secondary Registry",
+          "example_identifiers": [
+            "#1217"
+          ],
+          "published": "2026-01-28T17:45:00Z",
+          "summary": "Contains identifiers for issues in the official standard repository of the OASIS Open CSAF TC.",
+          "system_name": "https://github.com/oasis-tcs/csaf",
+          "text_pattern": "^#[1-9]\\d*$",
+          "updated": "2026-01-28T17:45:00Z"
+        }
+      ],
+      "last_updated": "2026-03-06T15:35:00Z",
+      "registry_version": 4
+    },
+    "third": {
+      "$schema": "https://raw.githubusercontent.com/oasis-tcs/csaf/master/registry/id/schema/registry.schema.json",
+      "entries": [
+        {
+          "common_name": "Bestest Registry Ever",
+          "example_identifiers": [
+            "#1217"
+          ],
+          "published": "2026-01-28T17:45:00Z",
+          "summary": "Contains identifiers for issues in the official standard repository of the OASIS Open CSAF TC.",
+          "system_name": "https://example.org",
+          "text_pattern": "^#[1-9]\\d*$",
+          "updated": "2026-01-28T17:45:00Z"
+        }
+      ],
+      "last_updated": "2026-04-06T15:35:00Z",
+      "registry_version": 3
+    }
+  }
+}

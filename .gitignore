@@ -5,3 +5,4 @@
 /.hugo_build.lock
 /data/registry.json
 /data/mapping.json
+/data/registries.json
