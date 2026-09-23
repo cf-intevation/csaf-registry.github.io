@@ -7,6 +7,7 @@
     {{ $reg := $data.registry }}
     <h2>Registry Information</h2>
     <p>Last updated on {{ $reg.last_updated | time.AsTime | time.Format ":date_long" }} {{ $reg.last_updated | time.AsTime | time.Format ":time_medium" }} with version {{ $reg.registry_version }}</p>
+    <p class="text-muted">The source for this information is available <a href="https://github.com/oasis-tcs/csaf/registry/{{ $regName }}/registry.json">here</a></p>
     <div class="table-responsive shadow-sm rounded my-2 ms-3">
         <table class="table tabel-hover table-striped align-middle mb-0">
             <thead>
@@ -36,6 +37,7 @@
     {{ $map := $data.mapping }}
     <h2 class="mt-4">Mappings</h2>
     <p>Last updated on {{ $map.last_updated | time.AsTime | time.Format ":date_long" }} {{ $map.last_updated | time.AsTime | time.Format ":time_medium" }} with version {{ $map.mapping_version }}</p>
+    <p class="text-muted">The source for this information is available <a href="https://github.com/oasis-tcs/csaf/registry/{{ $regName }}/mapping.json">here</a></p>
     <h3>Unambiguous Mappings</h3>
     <ul>
         {{ range $map.entries }}
