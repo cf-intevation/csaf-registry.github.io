@@ -5,6 +5,7 @@
     {{ range $regName, $reg := hugo.Data.demo.registry }}
     <h2 class="mt-4">Registry {{ $regName }}</h2>
     <p>Last updated on {{ $reg.last_updated | time.AsTime | time.Format ":date_long" }} {{ $reg.last_updated | time.AsTime | time.Format ":time_medium" }} with version {{ $reg.registry_version }}</p>
+    <p class="text-muted">The source for this information is available <a href="https://github.com/oasis-tcs/csaf/registry/{{ $regName }}/registry.json">here</a></p>
     <div class="table-responsive shadow-sm rounded my-2 ms-3">
         <table class="table tabel-hover table-striped align-middle mb-0">
             <thead>

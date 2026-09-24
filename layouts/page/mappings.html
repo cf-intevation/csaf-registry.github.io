@@ -5,6 +5,7 @@
     {{ range $regName, $map := hugo.Data.demo.mapping }}
     <h2 class="mt-4">Registry {{ $regName }}</h2>
     <p>Last updated on {{ $map.last_updated | time.AsTime | time.Format ":date_long" }} {{ $map.last_updated | time.AsTime | time.Format ":time_medium" }} with version {{ $map.mapping_version }}</p>
+    <p class="text-muted">The source for this information is available <a href="https://github.com/oasis-tcs/csaf/registry/{{ $regName }}/mapping.json">here</a></p>
     <h3>Unambiguous Mappings</h3>
     <ul>
         {{ range $map.entries }}
