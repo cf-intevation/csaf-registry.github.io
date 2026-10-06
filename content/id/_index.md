@@ -1,5 +1,5 @@
 +++
-title = 'Registry Id'
+title = 'Registry id'
 type = 'page'
 layout = 'combined'
 [params]
