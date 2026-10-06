@@ -3,7 +3,7 @@
 <div class="container my-5">
     <h1 class="mb-3">{{ .Title }}</h1>
     <p class="text-muted">{{ .Content }}</p>
-    {{ $data := index hugo.Data.registries $regName }}
+    {{ $data := index hugo.Data.demo $regName }}
     {{ $reg := $data.registry }}
     <p>{{ $data.readme | markdownify }}</p>
     <hr>
@@ -37,13 +37,16 @@
         </table>
     </div>
     {{ $map := $data.mapping }}
+    {{ if $map }}
+    {{ $ambiguous := where $map.entries "ambiguous" true }}
+    {{ $unambiguous := where $map.entries "ambiguous" false }}
     <h2 class="mt-4">Mappings</h2>
     <p>Last updated on {{ $map.last_updated | time.AsTime | time.Format ":date_long" }} {{ $map.last_updated | time.AsTime | time.Format ":time_medium" }} with version {{ $map.mapping_version }}</p>
     <p class="text-muted">The source for this information is available <a href="mapping/">here</a></p>
+    {{ if $unambiguous}}
     <h3>Unambiguous Mappings</h3>
     <ul>
-        {{ range $map.entries }}
-        {{ if not .ambiguous }}
+        {{ range $unambiguous }}
         <li><a href="{{ .registered_system_name }}" target="_blank">{{ .old_system_name }}</a></li>
         <div class="table-responsive shadow-sm rounded my-2">
             <table class="table tabel-hover table-striped align-middle mb-0">
@@ -64,9 +67,10 @@
             </table>
         </div>
         {{ end }}
-        {{ end }}
     </ul>
     <p>&nbsp;</p>
+    {{ end }}
+    {{ if $ambiguous }}
     <h3>Ambiguous Mappings</h3>
     <div class="table-responsive shadow-sm rounded my-2 ms-3">
         <table class="table tabel-hover table-striped align-middle mb-0">
@@ -78,8 +82,7 @@
                 </tr>
             </thead>
             <tbody>
-                {{ range $map.entries }}
-                {{ if .ambiguous }}
+                {{ range $ambiguous }}
                 <tr>
                     <td>{{ .old_system_name }}</td>
                     <td>
@@ -94,9 +97,10 @@
                     </td>
                 </tr>
                 {{ end }}
-                {{ end }}
             </tbody>
         </table>
     </div>
+    {{ end }}
+    {{ end }}
 </div>
 {{ end }}
