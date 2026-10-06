@@ -4,6 +4,7 @@
 
 import json
 import os
+from datetime import UTC, datetime
 from pathlib import Path
 
 from github import Github, Repository
@@ -24,27 +25,36 @@ def create_hugo_data(data: dict):
     if gi.exists() and gi.is_file():
         with gi.open() as f:
             gitignore = [x.strip() for x in f.readlines()]
+    updated = datetime.fromtimestamp(0, UTC)
     for name, registry in data.items():
         ignore_line = f'/content/{name}/'
         if not ignore_line in gitignore:
             gitignore.append(ignore_line)
         os.makedirs(f'content/{name}', exist_ok=True)
         for kind in ['registry', 'mapping']:
+            tmp = registry.get(kind, {}).get('last_updated', None)
+            if tmp is not None:
+                dt = datetime.fromisoformat(tmp)
+                updated = max(dt, updated)
             if kind in registry:
                 lines = [
                     '+++',
                     f'title = \'{name}::{kind}.json\'',
+                    f'date = {registry.get(kind, {}).get("last_updated", datetime.now(UTC).replace(microsecond=0).isoformat().replace('+00:00', 'Z'))}',
                     '+++',
                     f'{{{{< highlight_source registry="{name}" src="{kind}" type="json" >}}}}'
                 ]
                 with open(f'content/{name}/{kind}.md', 'w') as f:
                     f.write('\n'.join(lines))
                     f.write('\n')
+        if int(updated.timestamp()) == 0:
+            updated = datetime.now(UTC)
         lines = [
             '+++',
             f'title = \'Registry {name}\'',
             'type = \'page\'',
             'layout = \'combined\'',
+            f'date = {registry.get("last_updated", updated.replace(microsecond=0).isoformat().replace('+00:00', 'Z'))}',
             '[params]',
             f'registry = \'{name}\'',
             '+++'
