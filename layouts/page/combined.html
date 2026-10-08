@@ -20,17 +20,23 @@
                     <th>Example IDs</th>
                     <th>Published</th>
                     <th>Updated</th>
+                    <th>Mapping</th>
                 </tr>
             </thead>
             <tbody>
                 {{ range $reg.entries }}
+                {{ $related_mapping := "" }}
+                {{ if and ( $data.mapping ) ( $data.mapping.entries ) }}
+                {{ $related_mapping = where $data.mapping.entries "old_system_name" .common_name }}
+                {{ end }}
                 <tr>
-                    <td><a href="{{ .system_name }}" target="_blank">{{ .common_name }}</a></td>
+                    <td><a id="tbl_{{ replace .common_name " " "-" }}" href="{{ .system_name }}" target="_blank">{{ .common_name }}</a></td>
                     <td>{{ .summary }}</td>
                     <td>{{ .text_pattern }}</td>
                     <td>{{ delimit .example_identifiers ","}}</td>
                     <td>{{ .published | time.AsTime | time.Format $dateFmt }} {{ .published | time.AsTime | time.Format $timeFmt }}</td>
                     <td>{{ .updated | time.AsTime | time.Format $dateFmt }} {{ .updated | time.AsTime | time.Format $timeFmt }}</td>
+                    <td>{{ with first 1 $related_mapping }} <a href="#{{ replace ((index . 0).old_system_name) " " "-" }}">Mapping</a> {{ end }}</td>
                 </tr>
                 {{ end }}
             </tbody>
@@ -47,7 +53,7 @@
     <h3>Unambiguous Mappings</h3>
     <ul>
         {{ range $unambiguous }}
-        <li><a href="{{ .registered_system_name }}" target="_blank">{{ .old_system_name }}</a></li>
+        <li id="{{ replace .old_system_name " " "-"}}"><a href="#tbl_{{ replace .old_system_name " " "-"}}">{{ .old_system_name }}</a></li>
         <div class="table-responsive shadow-sm rounded my-2">
             <table class="table tabel-hover table-striped align-middle mb-0">
                 <thead>
@@ -83,7 +89,7 @@
             </thead>
             <tbody>
                 {{ range $ambiguous }}
-                <tr>
+                <tr id="{{ replace .old_system_name " " "-"}}">
                     <td>{{ .old_system_name }}</td>
                     <td>
                         {{ range .potentially_matching_registered_system_names }}
