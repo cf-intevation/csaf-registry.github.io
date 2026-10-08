@@ -5,6 +5,7 @@
 <div class="container my-5">
     {{ $data := index hugo.Data.registries $regName }}
     {{ $reg := $data.registry }}
+    <a href="/">Overview</a>
     <div>{{ $data.readme | markdownify }}</div>
     <hr>
     <h2 id="__reg">Registry Information</h2>

@@ -23,6 +23,44 @@ def get_first_heading(content: str):
                 return line[i + 1:]
     return ''
 
+def get_all_headings(content: str):
+    res = []
+    lines = content.split('\n')
+    for i in range(1, 6):
+        for line in lines:
+            s = '#' * i
+            s += ' '
+            if line.startswith(s):
+                res.append((line[i + 1:], i))
+    return res
+
+def simple_gen_toc(content: str, skip_first: bool):
+    entries = get_all_headings(content)
+    toc = []
+    linked = set()
+    for entry, depth in entries:
+        lnk = entry.lower().replace(' ', '-')
+        dup = 0
+        while lnk in linked:
+            dup += 1
+            lnk = entry.lower().replace(' ', '-').append(f'-{dup}')
+        linked.add(lnk)
+        prefix = '  ' * (depth - 1)
+        toc.append(f'{prefix}- [{entry}](#{entry.lower().replace(' ', '-')})')
+    if skip_first:
+        return toc[1:]
+    return toc
+
+def simple_insert_toc(content: str, has_mapping: bool):
+    toc = simple_gen_toc(content, False)
+    toc.append('- [Registry Information](#__reg)')
+    if has_mapping:
+        toc.append('- [Mapping Information](#__map)')
+    toc.extend(['', ''])
+    lines = [x.strip() for x in content.split('\n')]
+    lines[1:1] = toc
+    return '\n'.join(lines)
+
 def load_registry(repo: Repository.Repository, path: str):
     res = {}
     for entry in repo.get_contents(path):
@@ -108,7 +146,10 @@ def main():
     for entry in repo.get_contents('registry'):
         if entry.type == 'dir':
             print(f'Downloading Registry {entry.name} from {repo.owner.login}/{repo.name}')
-            registries[entry.name.lower()] = load_registry(repo, f'registry/{entry.name}')
+            key = entry.name.lower()
+            registries[key] = load_registry(repo, f'registry/{entry.name}')
+            if 'readme' in registries[key]:
+                registries[key]['readme'] = simple_insert_toc(registries[key]['readme'], 'mapping' in registries[key])
         elif is_readme(entry):
             registries['_index_'] = {'readme': entry.decoded_content.decode('utf-8')}
     os.makedirs('data', exist_ok=True)
