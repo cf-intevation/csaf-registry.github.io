@@ -7,17 +7,23 @@ import os
 from datetime import UTC, datetime
 from pathlib import Path
 
-from github import Github, Repository
+from github import ContentFile, Github, Repository
 
+
+def is_readme(file: ContentFile.ContentFile):
+    return file.type == 'file' and file.name in ['README.md', 'README', 'README.txt', 'README.rst']
 
 def load_registry(repo: Repository.Repository, path: str):
     res = {}
     for entry in repo.get_contents(path):
         if entry.type == 'file' and entry.name in ['mapping.json', 'registry.json']:
             res[Path(entry.name).stem.lower()] = json.loads(entry.decoded_content.decode('utf-8'))
-        elif entry.type == 'file' and entry.name in ['README.md', 'README', 'README.txt', 'README.rst']:
+        elif is_readme(entry):
             res[Path(entry.name).stem.lower()] = entry.decoded_content.decode('utf-8')
     return res
+
+def now():
+    return datetime.now(UTC).replace(microsecond=0).isoformat().replace('+00:00', 'Z')
 
 def create_hugo_data(data: dict):
     gitignore = []
@@ -28,8 +34,24 @@ def create_hugo_data(data: dict):
     updated = datetime.fromtimestamp(0, UTC)
     for name, registry in data.items():
         ignore_line = f'/content/{name}/'
+        if name == '_index_':
+            ignore_line = '/content/_index.md'
         if not ignore_line in gitignore:
             gitignore.append(ignore_line)
+        if name == '_index_':
+            with open('content/_index.md', 'w') as f:
+                lines = [
+                    '+++',
+                    'title = \'CSAF Registries\'',
+                    f'date = {now()}',
+                    'type = \'page\'',
+                    'layout = \'cust_index\'',
+                    '+++',
+                    f'{registry.get('readme', '')}'
+                ]
+                f.write('\n'.join(lines))
+                f.write('\n')
+            continue
         os.makedirs(f'content/{name}', exist_ok=True)
         for kind in ['registry', 'mapping']:
             tmp = registry.get(kind, {}).get('last_updated', None)
@@ -40,7 +62,7 @@ def create_hugo_data(data: dict):
                 lines = [
                     '+++',
                     f'title = \'{name}::{kind}.json\'',
-                    f'date = {registry.get(kind, {}).get("last_updated", datetime.now(UTC).replace(microsecond=0).isoformat().replace('+00:00', 'Z'))}',
+                    f'date = {registry.get(kind, {}).get("last_updated", now())}',
                     '+++',
                     f'{{{{< highlight_source registry="{name}" src="{kind}" type="json" >}}}}'
                 ]
@@ -74,6 +96,8 @@ def main():
         if entry.type == 'dir':
             print(f'Downloading Registry {entry.name} from {repo.owner.login}/{repo.name}')
             registries[entry.name.lower()] = load_registry(repo, f'registry/{entry.name}')
+        elif is_readme(entry):
+            registries['_index_'] = {'readme': entry.decoded_content.decode('utf-8')}
     os.makedirs('data', exist_ok=True)
     with open('data/registries.json', 'w') as f:
         json.dump(registries, f, indent=2)
