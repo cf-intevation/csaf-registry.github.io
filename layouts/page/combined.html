@@ -1,14 +1,14 @@
 {{ define "main" }}
 {{ $regName := .Params.registry }}
+{{ $dateFmt := "2006-01-02" }}
+{{ $timeFmt := "15:04:05" }}
 <div class="container my-5">
-    <h1 class="mb-3">{{ .Title }}</h1>
-    <p class="text-muted">{{ .Content }}</p>
     {{ $data := index hugo.Data.registries $regName }}
     {{ $reg := $data.registry }}
-    <p>{{ $data.readme | markdownify }}</p>
+    <div>{{ $data.readme | markdownify }}</div>
     <hr>
     <h2>Registry Information</h2>
-    <p>Last updated on {{ $reg.last_updated | time.AsTime | time.Format ":date_long" }} {{ $reg.last_updated | time.AsTime | time.Format ":time_medium" }} with version {{ $reg.registry_version }}</p>
+    <p>Last updated on {{ $reg.last_updated | time.AsTime | time.Format $dateFmt }} {{ $reg.last_updated | time.AsTime | time.Format $timeFmt }} with version {{ $reg.registry_version }}</p>
     <p class="text-muted">The source for this information is available <a href="registry/">here</a></p>
     <div class="table-responsive shadow-sm rounded my-2 ms-3">
         <table class="table tabel-hover table-striped align-middle mb-0">
@@ -29,8 +29,8 @@
                     <td>{{ .summary }}</td>
                     <td>{{ .text_pattern }}</td>
                     <td>{{ delimit .example_identifiers ","}}</td>
-                    <td>{{ .published | time.AsTime | time.Format ":date_long" }} {{ .published | time.AsTime | time.Format ":time_medium" }}</td>
-                    <td>{{ .updated | time.AsTime | time.Format ":date_long" }} {{ .updated | time.AsTime | time.Format ":time_medium" }}</td>
+                    <td>{{ .published | time.AsTime | time.Format $dateFmt }} {{ .published | time.AsTime | time.Format $timeFmt }}</td>
+                    <td>{{ .updated | time.AsTime | time.Format $dateFmt }} {{ .updated | time.AsTime | time.Format $timeFmt }}</td>
                 </tr>
                 {{ end }}
             </tbody>
@@ -41,7 +41,7 @@
     {{ $ambiguous := where $map.entries "ambiguous" true }}
     {{ $unambiguous := where $map.entries "ambiguous" false }}
     <h2 class="mt-4">Mappings</h2>
-    <p>Last updated on {{ $map.last_updated | time.AsTime | time.Format ":date_long" }} {{ $map.last_updated | time.AsTime | time.Format ":time_medium" }} with version {{ $map.mapping_version }}</p>
+    <p>Last updated on {{ $map.last_updated | time.AsTime | time.Format $dateFmt }} {{ $map.last_updated | time.AsTime | time.Format $timeFmt }} with version {{ $map.mapping_version }}</p>
     <p class="text-muted">The source for this information is available <a href="mapping/">here</a></p>
     {{ if $unambiguous}}
     <h3>Unambiguous Mappings</h3>

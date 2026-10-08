@@ -6,3 +6,8 @@ disableKinds = ['taxonomy', 'RSS', 'sitemap']
 ignoreFiles = ['.license$']
 canonifyURLs = true
 theme = 'bootstrap'
+defaultContentLanguage = 'en'
+[languages]
+  [languages.en]
+    weight = 1
+    locale = 'en-GB'
