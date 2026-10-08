@@ -13,6 +13,16 @@ from github import ContentFile, Github, Repository
 def is_readme(file: ContentFile.ContentFile):
     return file.type == 'file' and file.name in ['README.md', 'README', 'README.txt', 'README.rst']
 
+def get_first_heading(content: str):
+    lines = content.split('\n')
+    for i in range(1, 4):
+        for line in lines:
+            s = '#' * i
+            s += ' '
+            if line.startswith(s):
+                return line[i + 1:]
+    return ''
+
 def load_registry(repo: Repository.Repository, path: str):
     res = {}
     for entry in repo.get_contents(path):
@@ -71,9 +81,12 @@ def create_hugo_data(data: dict):
                     f.write('\n')
         if int(updated.timestamp()) == 0:
             updated = datetime.now(UTC)
+        title = get_first_heading(registry['readme'])
+        if len(title) == 0:
+            title = f'Registry {name}'
         lines = [
             '+++',
-            f'title = \'Registry {name}\'',
+            f'title = \'{title}\'',
             'type = \'page\'',
             'layout = \'combined\'',
             f'date = {registry.get("last_updated", updated.replace(microsecond=0).isoformat().replace('+00:00', 'Z'))}',
