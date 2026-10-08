@@ -7,7 +7,8 @@
     {{ $reg := $data.registry }}
     <div>{{ $data.readme | markdownify }}</div>
     <hr>
-    <h2>Registry Information</h2>
+    <h2 id="__reg">Registry Information</h2>
+    <a href="#">Back to top</a>
     <p>Last updated on {{ $reg.last_updated | time.AsTime | time.Format $dateFmt }} {{ $reg.last_updated | time.AsTime | time.Format $timeFmt }} with version {{ $reg.registry_version }}</p>
     <p class="text-muted">The source for this information is available <a href="registry/">here</a></p>
     <div class="table-responsive shadow-sm rounded my-2 ms-3">
@@ -46,7 +47,8 @@
     {{ if $map }}
     {{ $ambiguous := where $map.entries "ambiguous" true }}
     {{ $unambiguous := where $map.entries "ambiguous" false }}
-    <h2 class="mt-4">Mappings</h2>
+    <h2 id="__map" class="mt-4">Mappings</h2>
+    <a href="#">Back to top</a>
     <p>Last updated on {{ $map.last_updated | time.AsTime | time.Format $dateFmt }} {{ $map.last_updated | time.AsTime | time.Format $timeFmt }} with version {{ $map.mapping_version }}</p>
     <p class="text-muted">The source for this information is available <a href="mapping/">here</a></p>
     {{ if $unambiguous}}
@@ -78,6 +80,7 @@
     {{ end }}
     {{ if $ambiguous }}
     <h3>Ambiguous Mappings</h3>
+    <a href="#">Back to top</a>
     <div class="table-responsive shadow-sm rounded my-2 ms-3">
         <table class="table tabel-hover table-striped align-middle mb-0">
             <thead>
