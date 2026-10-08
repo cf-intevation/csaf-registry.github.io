@@ -3,7 +3,7 @@
 {{ $dateFmt := "2006-01-02" }}
 {{ $timeFmt := "15:04:05" }}
 <div class="container my-5">
-    {{ $data := index hugo.Data.registries $regName }}
+    {{ $data := index hugo.Data.demo $regName }}
     {{ $reg := $data.registry }}
     <div>{{ $data.readme | markdownify }}</div>
     <hr>
