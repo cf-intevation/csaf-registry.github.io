@@ -1,0 +1,63 @@
+{
+    "$schema": "https://raw.githubusercontent.com/oasis-tcs/csaf/master/registry/id/schema/mapping.schema.json",
+    "entries": [
+        {
+            "ambiguous": false,
+            "old_system_name": "OASIS Open CSAF TC GitHub Issues",
+            "registered_system_name": "https://github.com/oasis-tcs/csaf",
+            "text_conversion_rules": [
+                {
+                    "pattern_precondition": "^[Ii][Ss]{2}[Uu][Ee][Ss]?\\s[#]?\\d+$",
+                    "rule": "Remove the number and case insensitive substring 'Issue' as well as any following white space. Take the remaining string and insert a '#' at the beginning if the string does not start with one. Then, remove all zeros after the '#' and before the first non-zero digit."
+                },
+                {
+                    "pattern_precondition": "^\\d+$",
+                    "rule": "Insert a '#' at the beginning if the string does not start with one. Then, remove all zeros after the '#' and before the first non-zero digit."
+                }
+            ]
+        },
+        {
+            "ambiguous": false,
+            "old_system_name": "Other GitHub Issues",
+            "registered_system_name": "https://registry.example.org",
+            "text_conversion_rules": [
+                {
+                    "pattern_precondition": "^[Ii][Ss]{2}[Uu][Ee][Ss]?\\s[#]?\\d+$",
+                    "rule": "Remove the number and case insensitive substring 'Issue' as well as any following white space. Take the remaining string and insert a '#' at the beginning if the string does not start with one. Then, remove all zeros after the '#' and before the first non-zero digit."
+                },
+                {
+                    "pattern_precondition": "^\\d+$",
+                    "rule": "Insert a '#' at the beginning if the string does not start with one. Then, remove all zeros after the '#' and before the first non-zero digit."
+                }
+            ]
+        },
+        {
+            "ambiguous": true,
+            "old_system_name": "Some Issues",
+            "potentially_matching_registered_system_names": [
+                "https://foo.bar.example.org",
+                "https://list.example.org"
+            ],
+            "potentially_matching_unregistered_system_names": [
+                "GitHub Issues",
+                "FooBar Tracking System",
+                "https://void.example.org"
+            ]
+        },
+        {
+            "ambiguous": true,
+            "old_system_name": "Other Issues",
+            "potentially_matching_registered_system_names": [
+                "https://foo.bar.example.org",
+                "https://list.example.org"
+            ],
+            "potentially_matching_unregistered_system_names": [
+                "GitHub Issues",
+                "FooBar Tracking System",
+                "https://void.example.org"
+            ]
+        }
+    ],
+    "last_updated": "2026-03-06T22:55:00Z",
+    "mapping_version": 3
+}
