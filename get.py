@@ -46,7 +46,7 @@ def simple_gen_toc(content: str, skip_first: bool):
             lnk = entry.lower().replace(' ', '-').append(f'-{dup}')
         linked.add(lnk)
         prefix = '  ' * (depth - 1)
-        toc.append(f'{prefix}- [{entry}](#{entry.lower().replace(' ', '-')})')
+        toc.append(f'{prefix}- [{entry}](#{entry.lower().replace(' ', '-').replace('(', '').replace(')', '')})')
     if skip_first:
         return toc[1:]
     return toc
