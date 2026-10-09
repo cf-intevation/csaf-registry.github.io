@@ -91,9 +91,9 @@ def create_hugo_data(data: dict):
     if gi.exists() and gi.is_file():
         with gi.open() as f:
             gitignore = [x.strip() for x in f.readlines()]
-    updated = datetime.fromtimestamp(0, UTC)
     os.makedirs('content', exist_ok=True)
     for name, registry in data.items():
+        updated = datetime.fromtimestamp(0, UTC)
         ignore_line = f'/content/{name}/'
         if name == '_index_':
             ignore_line = '/content/_index.md'
