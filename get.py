@@ -108,15 +108,9 @@ def create_hugo_data(data: dict):
                 dt = datetime.fromisoformat(tmp)
                 updated = max(dt, updated)
             if kind in registry:
-                lines = [
-                    '+++',
-                    f'title = \'{name}::{kind}.json\'',
-                    f'date = {registry.get(kind, {}).get("last_updated", now())}',
-                    '+++',
-                    f'{{{{< highlight_source registry="{name}" src="{kind}" type="json" >}}}}'
-                ]
-                with open(f'content/{name}/{kind}.md', 'w') as f:
-                    f.write('\n'.join(lines))
+                os.makedirs(f'content/{name}/{kind}', exist_ok=True)
+                with open(f'content/{name}/{kind}/index.json', 'w') as f:
+                    json.dump(registry.get(kind), f, indent=2)
                     f.write('\n')
         if int(updated.timestamp()) == 0:
             updated = datetime.now(UTC)
