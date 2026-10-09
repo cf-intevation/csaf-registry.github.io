@@ -2,6 +2,7 @@
 {{ $regName := .Params.registry }}
 {{ $dateFmt := "2006-01-02" }}
 {{ $timeFmt := "15:04:05" }}
+{{ $timezone := "UTC" }}
 <div class="container my-5">
     {{ $data := index hugo.Data.registries $regName }}
     {{ $reg := $data.registry }}
@@ -10,7 +11,7 @@
     <hr>
     <h2 id="__reg">Registry Information</h2>
     <a href="#">Back to top</a>
-    <p>Last updated on {{ $reg.last_updated | time.AsTime | time.Format $dateFmt }} {{ $reg.last_updated | time.AsTime | time.Format $timeFmt }} with version {{ $reg.registry_version }}</p>
+    <p>Last updated on {{ $reg.last_updated | time.AsTime | time.In $timezone | time.Format $dateFmt }} {{ $reg.last_updated | time.AsTime | time.In $timezone | time.Format $timeFmt }} {{ $timezone }} with version {{ $reg.registry_version }}</p>
     <p class="text-muted">The source for this information is available <a href="registry/">here</a></p>
     <div class="table-responsive shadow-sm rounded my-2 ms-3">
         <table class="table tabel-hover table-striped align-middle mb-0">
@@ -36,8 +37,8 @@
                     <td>{{ .summary }}</td>
                     <td>{{ .text_pattern }}</td>
                     <td>{{ delimit .example_identifiers ","}}</td>
-                    <td>{{ .published | time.AsTime | time.Format $dateFmt }} {{ .published | time.AsTime | time.Format $timeFmt }}</td>
-                    <td>{{ .updated | time.AsTime | time.Format $dateFmt }} {{ .updated | time.AsTime | time.Format $timeFmt }}</td>
+                    <td>{{ .published | time.AsTime | time.In $timezone | time.Format $dateFmt }} {{ .published | time.AsTime | time.In $timezone | time.Format $timeFmt }} {{ $timezone }}</td>
+                    <td>{{ .updated | time.AsTime | time.In $timezone | time.Format $dateFmt }} {{ .updated | time.AsTime | time.In $timezone | time.Format $timeFmt }} {{ $timezone }}</td>
                     <td>{{ with first 1 $related_mapping }} <a href="#{{ replace ((index . 0).old_system_name) " " "-" }}">Mapping</a> {{ end }}</td>
                 </tr>
                 {{ end }}
@@ -50,7 +51,7 @@
     {{ $unambiguous := where $map.entries "ambiguous" false }}
     <h2 id="__map" class="mt-4">Mappings</h2>
     <a href="#">Back to top</a>
-    <p>Last updated on {{ $map.last_updated | time.AsTime | time.Format $dateFmt }} {{ $map.last_updated | time.AsTime | time.Format $timeFmt }} with version {{ $map.mapping_version }}</p>
+    <p>Last updated on {{ $map.last_updated | time.AsTime | time.In $timezone | time.Format $dateFmt }} {{ $map.last_updated | time.AsTime | time.In $timezone | time.Format $timeFmt }} {{ $timezone }} with version {{ $map.mapping_version }}</p>
     <p class="text-muted">The source for this information is available <a href="mapping/">here</a></p>
     {{ if $unambiguous}}
     <h3>Unambiguous Mappings</h3>
