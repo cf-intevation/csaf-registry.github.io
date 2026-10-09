@@ -12,7 +12,7 @@
     <h2 id="__reg">Registry Information</h2>
     <a href="#">Back to top</a>
     <p>Last updated on {{ $reg.last_updated | time.AsTime | time.In $timezone | time.Format $dateFmt }} {{ $reg.last_updated | time.AsTime | time.In $timezone | time.Format $timeFmt }} {{ $timezone }} with version {{ $reg.registry_version }}</p>
-    <p class="text-muted">The source for this information is available <a href="registry/">here</a></p>
+    <p class="text-muted">The source for this information is available <a href="registry/">here</a>{{ if isset $data "registry.schema" }} based on the following <a href="registry.schema/">schema</a>{{ end }}</p>
     <div class="table-responsive shadow-sm rounded my-2 ms-3">
         <table class="table tabel-hover table-striped align-middle mb-0">
             <thead>
@@ -52,7 +52,7 @@
     <h2 id="__map" class="mt-4">Mappings</h2>
     <a href="#">Back to top</a>
     <p>Last updated on {{ $map.last_updated | time.AsTime | time.In $timezone | time.Format $dateFmt }} {{ $map.last_updated | time.AsTime | time.In $timezone | time.Format $timeFmt }} {{ $timezone }} with version {{ $map.mapping_version }}</p>
-    <p class="text-muted">The source for this information is available <a href="mapping/">here</a></p>
+    <p class="text-muted">The source for this information is available <a href="mapping/">here</a>{{ if isset $data "mapping.schema" }} based on the following <a href="mapping.schema/">schema</a>{{ end }}</p>
     {{ if $unambiguous}}
     <h3>Unambiguous Mappings</h3>
     <ul>
