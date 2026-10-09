@@ -63,11 +63,23 @@ def simple_insert_toc(content: str, has_mapping: bool):
 
 def load_registry(repo: Repository.Repository, path: str):
     res = {}
+    has_schema = False
     for entry in repo.get_contents(path):
         if entry.type == 'file' and entry.name in ['mapping.json', 'registry.json']:
             res[Path(entry.name).stem.lower()] = json.loads(entry.decoded_content.decode('utf-8'))
         elif is_readme(entry):
             res[Path(entry.name).stem.lower()] = entry.decoded_content.decode('utf-8')
+        elif entry.type == 'dir' and entry.name == 'schema':
+            has_schema = True
+    if not has_schema:
+        return res
+    for entry in repo.get_contents(f'{path}/schema'):
+        if entry.type == 'file' and entry.name in ['mapping.schema.json', 'registry.schema.json']:
+            key = Path(entry.name).stem.lower()
+            res[key] = json.loads(entry.decoded_content.decode('utf-8'))
+            if not 'last_updated' in res[key]:
+                commits = repo.get_commits(path=entry.path)
+                res[key]['__last_updated__'] = commits[0].commit.author.date
     return res
 
 def now():
@@ -79,9 +91,9 @@ def create_hugo_data(data: dict):
     if gi.exists() and gi.is_file():
         with gi.open() as f:
             gitignore = [x.strip() for x in f.readlines()]
-    updated = datetime.fromtimestamp(0, UTC)
     os.makedirs('content', exist_ok=True)
     for name, registry in data.items():
+        updated = datetime.fromtimestamp(0, UTC)
         ignore_line = f'/content/{name}/'
         if name == '_index_':
             ignore_line = '/content/_index.md'
@@ -102,6 +114,30 @@ def create_hugo_data(data: dict):
                 f.write('\n')
             continue
         os.makedirs(f'content/{name}', exist_ok=True)
+        for kind in ['registry', 'mapping', 'registry.schema', 'mapping.schema']:
+            tmp = registry.get(kind, {}).get('last_updated', None)
+            tmp2 = registry.get(kind, {}).get('__last_updated__', None)
+            if tmp is not None:
+                dt = datetime.fromisoformat(tmp)
+                updated = max(dt, updated)
+            elif tmp2 is not None:
+                updated = max(tmp2, updated)
+                del registry[kind]['__last_updated__']
+            if kind in registry:
+                os.makedirs(f'content/{name}/{kind}', exist_ok=True)
+                with open(f'content/{name}/{kind}/index.json', 'w') as f:
+                    json.dump(registry.get(kind), f, indent=2)
+                    f.write('\n')
+                lines = [
+                    '+++',
+                    f'title = \'{name}::{kind}.json\'',
+                    f'date = {registry.get(kind, {}).get("last_updated", now())}',
+                    '+++',
+                    f'{{{{< highlight_source registry="{name}" src="{kind}" type="json" >}}}}'
+                ]
+                with open(f'content/{name}/{kind}/render.md', 'w') as f:
+                    f.write('\n'.join(lines))
+                    f.write('\n')
         if int(updated.timestamp()) == 0:
             updated = datetime.now(UTC)
         title = get_first_heading(registry['readme'])
@@ -137,10 +173,10 @@ def main():
                 registries[key]['readme'] = simple_insert_toc(registries[key]['readme'], 'mapping' in registries[key])
         elif is_readme(entry):
             registries['_index_'] = {'readme': entry.decoded_content.decode('utf-8')}
+    create_hugo_data(registries)
     os.makedirs('data', exist_ok=True)
     with open('data/registries.json', 'w') as f:
         json.dump(registries, f, indent=2)
-    create_hugo_data(registries)
 
 if __name__ == '__main__':
     main()
