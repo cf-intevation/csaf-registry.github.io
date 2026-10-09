@@ -3,4 +3,4 @@
 {{ $kind := .Get "src" }}
 {{ $data := index hugo.Data.registries $regName }}
 {{ $json := index $data $kind | jsonify (dict "indent" "  ") }}
-<pre><code>{{ highlight $json $lang }}</code></pre>
+{{ highlight $json $lang }}
