@@ -75,7 +75,7 @@ def load_registry(repo: Repository.Repository, path: str):
         return res
     for entry in repo.get_contents(f'{path}/schema'):
         if entry.type == 'file' and entry.name in ['mapping.schema.json', 'registry.schema.json']:
-            key = Path(entry.name).stem.lower()
+            key = Path(entry.name).stem.lower().replace('.', '/')
             res[key] = json.loads(entry.decoded_content.decode('utf-8'))
             if not 'last_updated' in res[key]:
                 commits = repo.get_commits(path=entry.path)
@@ -114,7 +114,7 @@ def create_hugo_data(data: dict):
                 f.write('\n')
             continue
         os.makedirs(f'content/{name}', exist_ok=True)
-        for kind in ['registry', 'mapping', 'registry.schema', 'mapping.schema']:
+        for kind in ['registry', 'mapping', 'registry/schema', 'mapping/schema']:
             tmp = registry.get(kind, {}).get('last_updated', None)
             tmp2 = registry.get(kind, {}).get('__last_updated__', None)
             if tmp is not None:
