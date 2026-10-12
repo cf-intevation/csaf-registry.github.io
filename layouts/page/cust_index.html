@@ -14,16 +14,7 @@
         <div class="card border-light-subtle mb-3">
             <div class="row g-0">
 
-                <div class="col-md-4 d-flex align-items-center">
-                    {{ if isset .Params "images" }}
-                        {{ with .Resources.GetMatch (index .Params.Images 0) }}
-                            {{ $image := .Fill "600x300 Center webp" }}
-                            <img class="img-fluid rounded p-1" src="{{ $image.RelPermalink }}" loading="lazy" width="{{ $image.Width }}" height="{{ $image.Height }}" alt="featured image {{.Title }}">
-                        {{ end }}
-                    {{ end }}
-                </div>
-
-                <div class="col-md-8">
+                <div class="col-md-8 mx-auto">
                     <div class="card-body">
                         <h2 class="card-title text-primary">{{ .Title }}</h2>
 
