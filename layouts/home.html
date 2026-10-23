@@ -1,0 +1,36 @@
+{{ define "main" }}
+<div class="container py-3">
+    <div class="row mb-3">
+        <div class="col-auto">
+            {{ .Content }}
+        </div>
+    </div>
+{{ range .Site.Sections }}
+    <div class="card border-light-subtle mb-3">
+        <div class="row g-0">
+            <div class="col-md-8 mx-auto">
+                <div class="card-body">
+                    <h2 class="card-title text-primary">{{ .Title }}</h2>
+                    <div class="card-subtitle text-muted mb-3">
+                        <time class="ms-2" datetime="{{ .Lastmod.Format `2006-01-02T15:04:05Z0700` | safeHTML }}">{{ .Lastmod | time.Format ":date_long" }}</time>
+                    </div>
+
+                    <div class="card-text">
+                        {{ with .Params.description }}
+                            {{ . }}
+                        {{ else }}
+                            {{ .Summary | truncate 400 }}
+                        {{ end }}
+                    </div>
+
+                    {{/* The link covers the whole card and carries no visible text of
+                         its own, so its accessible name comes from the title repeated
+                         for screen readers - an empty <a> is announced as just "link". */}}
+                    <a class="stretched-link" href="{{.RelPermalink}}"><span class="visually-hidden">{{ .Title }}</span></a>
+                </div>
+            </div>
+        </div>
+    </div>
+{{ end }}
+</div>
+{{ end }}
