@@ -1,0 +1,18 @@
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+{{- $icons := slice
+      (dict "file" "icons/favicon.svg"          "rel" "icon"             "type" "image/svg+xml")
+      (dict "file" "icons/favicon.png"          "rel" "icon"             "type" "image/png")
+      (dict "file" "icons/favicon-96x96.png"    "rel" "icon"             "type" "image/png" "sizes" "96x96")
+      (dict "file" "icons/favicon.ico"          "rel" "shortcut icon")
+      (dict "file" "icons/apple-touch-icon.png" "rel" "apple-touch-icon" "sizes" "180x180")
+-}}
+{{- $found := 0 -}}
+{{- range $icons -}}
+{{- if os.FileExists (printf "static/%s" .file) -}}
+{{- $found = add $found 1 }}
+<link rel="{{ .rel }}"{{ with .type }} {{ printf "type=%q" . | safeHTMLAttr }}{{ end }}{{ with .sizes }} sizes="{{ . }}"{{ end }} href="{{ .file | absURL }}">
+{{- end -}}
+{{- end }}
+<title>{{ .Title }}</title>

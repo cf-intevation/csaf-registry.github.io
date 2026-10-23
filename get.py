@@ -34,7 +34,7 @@ def get_all_headings(content: str):
                 res.append((line[i + 1:], i))
     return res
 
-def simple_gen_toc(content: str, skip_first: bool):
+def simple_gen_toc(content: str, url_fragment: str, skip_first: bool):
     entries = get_all_headings(content)
     toc = []
     linked = set()
@@ -46,16 +46,16 @@ def simple_gen_toc(content: str, skip_first: bool):
             lnk = entry.lower().replace(' ', '-').append(f'-{dup}')
         linked.add(lnk)
         prefix = '  ' * (depth - 1)
-        toc.append(f'{prefix}- [{entry}](#{entry.lower().replace(' ', '-')})')
+        toc.append(f'{prefix}- [{entry}]({url_fragment}/#{entry.lower().replace(' ', '-').replace('(', '').replace(')', '')})')
     if skip_first:
         return toc[1:]
     return toc
 
-def simple_insert_toc(content: str, has_mapping: bool):
-    toc = simple_gen_toc(content, False)
-    toc.append('- [Registry Information](#__reg)')
+def simple_insert_toc(content: str, url_fragment: str, has_mapping: bool):
+    toc = simple_gen_toc(content, url_fragment, False)
+    toc.append(f'- [Registry Information]({url_fragment}/#__reg)')
     if has_mapping:
-        toc.append('- [Mapping Information](#__map)')
+        toc.append(f'- [Mapping Information]({url_fragment}/#__map)')
     toc.extend(['', ''])
     lines = [x.strip() for x in content.split('\n')]
     lines[1:1] = toc
@@ -75,7 +75,7 @@ def load_registry(repo: Repository.Repository, path: str):
         return res
     for entry in repo.get_contents(f'{path}/schema'):
         if entry.type == 'file' and entry.name in ['mapping.schema.json', 'registry.schema.json']:
-            key = Path(entry.name).stem.lower()
+            key = Path(entry.name).stem.lower().replace('.', '/')
             res[key] = json.loads(entry.decoded_content.decode('utf-8'))
             if not 'last_updated' in res[key]:
                 commits = repo.get_commits(path=entry.path)
@@ -106,7 +106,6 @@ def create_hugo_data(data: dict):
                     'title = \'CSAF Registries\'',
                     f'date = {now()}',
                     'type = \'page\'',
-                    'layout = \'cust_index\'',
                     '+++',
                     f'{registry.get('readme', '')}'
                 ]
@@ -114,7 +113,7 @@ def create_hugo_data(data: dict):
                 f.write('\n')
             continue
         os.makedirs(f'content/{name}', exist_ok=True)
-        for kind in ['registry', 'mapping', 'registry.schema', 'mapping.schema']:
+        for kind in ['registry', 'mapping', 'registry/schema', 'mapping/schema']:
             tmp = registry.get(kind, {}).get('last_updated', None)
             tmp2 = registry.get(kind, {}).get('__last_updated__', None)
             if tmp is not None:
@@ -170,7 +169,7 @@ def main():
             key = entry.name.lower()
             registries[key] = load_registry(repo, f'registry/{entry.name}')
             if 'readme' in registries[key]:
-                registries[key]['readme'] = simple_insert_toc(registries[key]['readme'], 'mapping' in registries[key])
+                registries[key]['readme'] = simple_insert_toc(registries[key]['readme'], key, 'mapping' in registries[key])
         elif is_readme(entry):
             registries['_index_'] = {'readme': entry.decoded_content.decode('utf-8')}
     create_hugo_data(registries)

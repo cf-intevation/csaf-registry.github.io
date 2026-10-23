@@ -1,0 +1,17 @@
+<!doctype html>
+<html lang="{{ .Language.Locale | default site.Language.Locale }}" style="scroll-padding-top: 64px;">
+    <head>
+        {{ partial "head.html" . }}
+    </head>
+    <body class="min-vh-100 bg-body">
+        <header class="container bg-primary-subtle position-sticky top-0 mb-3">
+            {{- partial "header.html" . -}}
+        </header>
+        <main class="container">
+            {{ block "main" . }}{{ end }}
+        </main>
+        <footer class="container text-bg-secondary position-sticky bottom-0">
+            {{- partial "footer.html" . -}}
+        </footer>
+    </body>
+</html>
